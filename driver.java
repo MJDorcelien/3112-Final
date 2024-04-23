@@ -16,17 +16,31 @@ public class driver {
         while (exitTicket != 0){
 
             System.out.println("Please select from the following options, by typing a number:");
-            System.out.println("\t User Activity");
-            System.out.println("\t 1. Sign In");
-            System.out.println("\t 2. Sign Up");
-            System.out.println("\t 3. Log out");
+            if(user.getName()==null || user.getEmail()==null){
+                System.out.println("\t 1. Sign In");
+                System.out.println("\t 2. Sign Up\n");
+                System.out.println("\t 0. Exit the budget tracker");
+            }
+            else {
+                System.out.println("\t 3. Log out\n");
+                System.out.println("\t 4. Add a transaction");
+                System.out.println("\t 5. Delete transaction");
+                System.out.println("\t 6. Print all your transactions\n"); 
+                System.out.println("\t 0. Exit the budget tracker");           
+            }
+            // System.out.println("\t User Activity");
+            // System.out.println("\t 1. Sign In");
+            // System.out.println("\t 2. Sign Up");
+            // System.out.println("\t 3. Log out\n");
 
-            System.out.println("\t Transaction Activity");
-            System.out.println("\t 4. Add a transaction");
-            System.out.println("\t 5. Delete transaction");
-            System.out.println("\t 6. Print all transactions");
+            // System.out.println("\t Transaction Activity");
+            // System.out.println("\t 4. Add a transaction");
+            // System.out.println("\t 5. Delete transaction");
+            // System.out.println("\t 6. Print all your transactions");
+            // // System.out.println("\t 7. Print all EXPENSES");
+            // // System.out.println("\t 8. Print all INCOME");
 
-            System.out.println("\t 0. Exit the budget tracker");
+            // System.out.println("\t 0. Exit the budget tracker");
 
             int choice = scnr.nextInt();
 
@@ -34,7 +48,7 @@ public class driver {
                 case 1:
                     user = tracker.signIn(custs);
                     if(user.getName()==null || user.getEmail()==null){
-                        System.out.println("Unable to log in. Either the username or the email is incorrect");
+                        System.out.println("Unable to log in. Either the username or the email is incorrect\n");
                     }
                     else {
                         System.out.println(user.getName() + " has signed in\n");
@@ -44,7 +58,7 @@ public class driver {
                     customer customer = tracker.signUp(custs, custs.size());
                     custs.add(customer);
                     user = customer;
-                    System.out.println(custs.get(customer.getID()-1).printCustomer());
+                    System.out.println("\n" + custs.get(customer.getID()-1).printCustomer());
                     System.out.println(user.getName() + " has signed in\n");
                     break;
                 case 3:

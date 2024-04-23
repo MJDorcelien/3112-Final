@@ -62,6 +62,6 @@ public class customer {
     }
 
     public String printCustomer(){
-        return name + " signed up with " + email + "\n";
+        return name + " signed up with " + email;
     }
 }

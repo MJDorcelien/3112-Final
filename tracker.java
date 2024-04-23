@@ -106,7 +106,7 @@ public class tracker {
     public customer logOut(customer user){
         String name = user.getName();
         user = new customer();
-        System.out.println(name + " is now signed out. You must sign in to another user or sign up to create a transaction.");
+        System.out.println(name + " is now signed out. You must sign in to another user or sign up to create a transaction.\n");
         return user;
     }
 
