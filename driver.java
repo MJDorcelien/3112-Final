@@ -24,23 +24,15 @@ public class driver {
             else {
                 System.out.println("\t 3. Log out\n");
                 System.out.println("\t 4. Add a transaction");
+                // need to fix
                 System.out.println("\t 5. Delete transaction");
-                System.out.println("\t 6. Print all your transactions\n"); 
+                System.out.println("\t 6. Print all your transactions"); 
+                // need to implement
+                System.out.println("\t 7. Print all EXPENSES");
+                // need to implement
+                System.out.println("\t 8. Print all INCOME\n");
                 System.out.println("\t 0. Exit the budget tracker");           
             }
-            // System.out.println("\t User Activity");
-            // System.out.println("\t 1. Sign In");
-            // System.out.println("\t 2. Sign Up");
-            // System.out.println("\t 3. Log out\n");
-
-            // System.out.println("\t Transaction Activity");
-            // System.out.println("\t 4. Add a transaction");
-            // System.out.println("\t 5. Delete transaction");
-            // System.out.println("\t 6. Print all your transactions");
-            // // System.out.println("\t 7. Print all EXPENSES");
-            // // System.out.println("\t 8. Print all INCOME");
-
-            // System.out.println("\t 0. Exit the budget tracker");
 
             int choice = scnr.nextInt();
 
@@ -100,14 +92,40 @@ public class driver {
                         System.out.println(noUser);
                         break;
                     }
-                    System.out.println(user.getID());
-                    ArrayList<String> x = tracker.printTransactions(actions);
+                    // System.out.println(user.getID());
+                    // ArrayList<String> x = tracker.printTransactions(actions);
                     ArrayList<String> z = tracker.printCustTransactions(actions, user);
                     for (String action : z) {
                         System.out.println(action);
                     }
                     System.out.println("\n");
-                    break;        
+                    break;   
+                case 7: 
+                    if(user.getName() == null){
+                        System.out.println(noUser);
+                        break;
+                    }
+                    ArrayList<String> expenses = tracker.printCustExpenses(actions, user);
+                    double expensesTotal = tracker.custExpensesTotal(actions, user);
+                    System.out.println(user.getName() + " has spent $" + expensesTotal + "\n");
+                    for (String action : expenses) {
+                        System.out.println(action);
+                    }
+                    System.out.println("\n");
+                    break; 
+                case 8:  
+                    if(user.getName() == null){
+                        System.out.println(noUser);
+                        break;
+                    }
+                    ArrayList<String> incomes = tracker.printCustIncomes(actions, user);
+                    double incomesTotal = tracker.custIncomesTotal(actions, user);
+                    System.out.println(user.getName() + " has made $" + incomesTotal + "\n");
+                    for (String action : incomes) {
+                        System.out.println(action);
+                    }
+                    System.out.println("\n");
+                    break; 
                 case 0: 
                     System.exit(0);
                     break;

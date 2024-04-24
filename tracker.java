@@ -21,6 +21,23 @@ public class tracker {
         // need to make sure they both aren't empty
         // need to change the result string
 
+        // Reading from a File (Read operation)-String path = "path/to/your/file.txt";
+        // try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+        //     String line;
+        //     while ((line = reader.readLine()) != null) {
+        //         // Process each line
+        //     }
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
+        // Writing to a File (Create/Update operation)-String path = "path/to/your/file.txt";
+        // try (BufferedWriter writer = new BufferedWriter(new FileWriter(path, true))) { // true for append mode
+        //     writer.write("Some text to write to the file");
+        //     writer.newLine(); // adds a new line
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
+
         return result;
     }
 
@@ -194,5 +211,55 @@ public class tracker {
         }
 
         return result;
+    }
+
+    public ArrayList<String> printCustExpenses(ArrayList<transactions> actions, customer user){
+        ArrayList<String> result = new ArrayList<>();
+
+        for (transactions action : actions) {
+            if(action.getCustID() == user.getID() && action.getType()){
+                String transaction = action.getID() + ": $" + action.getCost() + " spent at " + action.getStore();
+                result.add(transaction);
+            }
+        }
+
+        return result;
+    }
+
+    public double custExpensesTotal(ArrayList<transactions> actions, customer user){
+        double total = 0.00;
+
+        for (transactions action : actions) {
+            if(action.getCustID() == user.getID() && action.getType()){
+                total += action.getCost();
+            }
+        }
+
+        return total;
+    }
+
+    public ArrayList<String> printCustIncomes(ArrayList<transactions> actions, customer user){
+        ArrayList<String> result = new ArrayList<>();
+
+        for (transactions action : actions) {
+            if(action.getCustID() == user.getID() && !action.getType()){
+                String transaction = action.getID() + ": $" + action.getCost() + " made at " + action.getStore();
+                result.add(transaction);
+            }
+        }
+        
+        return result;
+    }
+
+    public double custIncomesTotal(ArrayList<transactions> actions, customer user){
+        double total = 0.00;
+
+        for (transactions action : actions) {
+            if(action.getCustID() == user.getID() && !action.getType()){
+                total += action.getCost();
+            }
+        }
+
+        return total;
     }
 }
