@@ -8,9 +8,10 @@ public class driver {
         int exitTicket = 1;
 
         tracker tracker = new tracker();
-        ArrayList<customer> custs = new ArrayList<>();
-        ArrayList<transactions> actions = new ArrayList<>();
+        ArrayList<customer> custs = tracker.startTrackerCust();
+        ArrayList<transactions> actions = tracker.startTrackerAct();
         customer user = new customer();
+        ArrayList<transactions> acts = new ArrayList<>();
         String noUser = "Please either sign in or sign up! You cannot log a transaction without being logged in.";
         
         while (exitTicket != 0){
@@ -23,14 +24,13 @@ public class driver {
             }
             else {
                 System.out.println("\t 3. Log out\n");
+
                 System.out.println("\t 4. Add a transaction");
-                // need to fix
                 System.out.println("\t 5. Delete transaction");
                 System.out.println("\t 6. Print all your transactions"); 
-                // need to implement
                 System.out.println("\t 7. Print all EXPENSES");
-                // need to implement
                 System.out.println("\t 8. Print all INCOME\n");
+
                 System.out.println("\t 0. Exit the budget tracker");           
             }
 
@@ -45,13 +45,20 @@ public class driver {
                     else {
                         System.out.println(user.getName() + " has signed in\n");
                     }
+                    acts = tracker.custTransactions(actions, user.getID());
                     break;
                 case 2: 
-                    customer customer = tracker.signUp(custs, custs.size());
+                    int id = 0;
+                    if (custs.size()!=0){
+                        id = custs.get(custs.size()-1).getID();                        
+                    }
+                    else{}
+                    customer customer = tracker.signUp(custs, id);
                     custs.add(customer);
                     user = customer;
                     System.out.println("\n" + custs.get(customer.getID()-1).printCustomer());
                     System.out.println(user.getName() + " has signed in\n");
+                    acts = tracker.custTransactions(actions, user.getID());
                     break;
                 case 3:
                     tracker.logOut(user);
@@ -62,9 +69,15 @@ public class driver {
                         System.out.println(noUser);
                         break;
                     }
-                    transactions transaction = tracker.addTransaction(actions.size(), user);
+                    int newID = 0;
+                    if(acts.size()!= 0){
+                        newID = acts.get(acts.size()-1).getID()+1;
+                    }
+                    // int newID = actions.get(actions.size()-1).getID()+1;
+                    transactions transaction = tracker.addTransaction(newID, user);
+                    acts.add(transaction);
                     actions.add(transaction);
-                    System.out.println(actions.get(transaction.getID()-1).printTransaction());
+                    System.out.println(actions.get(actions.size()-1).printTransaction());
                     break; 
                 case 5:  
                     if(user.getName() == null){
@@ -72,7 +85,7 @@ public class driver {
                         break;
                     }
                     System.out.println("Below are is a list of all your transactions");
-                    ArrayList<String> y = tracker.printTransactions(actions);
+                    ArrayList<String> y = tracker.printTransactions(acts);
                     for (String action : y) {
                         System.out.println(action);
                     }
@@ -82,8 +95,12 @@ public class driver {
                     System.out.println("Are you sure you would like to delete transaction #" + index + "? Enter 1 for yes and 0 for no.");
                     int checker = scnr.nextInt();
                     if (checker == 1){
-                        actions = tracker.deleteTransaction(actions, index);
-                        System.out.println(index);
+                        acts = tracker.deleteTransaction(acts, index);
+                        for (transactions tra : actions) {
+                            if(tra.getID() == index && user.getID() == tra.getCustID()){
+                                actions = tracker.deleteTransaction(actions, index);
+                            }
+                        }
                     }
                     System.out.println("\n");
                     break;
@@ -92,11 +109,12 @@ public class driver {
                         System.out.println(noUser);
                         break;
                     }
-                    // System.out.println(user.getID());
-                    // ArrayList<String> x = tracker.printTransactions(actions);
                     ArrayList<String> z = tracker.printCustTransactions(actions, user);
                     for (String action : z) {
                         System.out.println(action);
+                    }
+                    if (z.isEmpty()){
+                        System.out.println(user.getName() + " has not logged any transactions.");
                     }
                     System.out.println("\n");
                     break;   
@@ -127,6 +145,8 @@ public class driver {
                     System.out.println("\n");
                     break; 
                 case 0: 
+                    String result = tracker.endTracker(actions, custs);
+                    System.out.println(result);
                     System.exit(0);
                     break;
                 default:

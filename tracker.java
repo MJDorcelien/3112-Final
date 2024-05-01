@@ -1,9 +1,12 @@
-import java.lang.reflect.Array;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class tracker {
-    private ArrayList<customer> customerList = new ArrayList<>();
     Scanner scnr = new Scanner(System.in);
 
     public tracker() {
@@ -11,45 +14,94 @@ public class tracker {
     }
 
     // tracker methods
-    public String startTracker(){
-        String result = "NO customer and transaction";
+    public ArrayList<transactions> startTrackerAct(){
+        ArrayList<transactions> result = new ArrayList<>();
+        ArrayList<String> strings = new ArrayList<>();
 
-        // will probably have to take in the arraylists
+        String path = "transactions.txt";
+        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
 
-        // need to add customer info
-        // need to add transaction info
-        // need to make sure they both aren't empty
-        // need to change the result string
+            String line;
+            int custID = 0;
+            int id = 0;
+            String store = null;
+            double cost = 0.00;
+            boolean type = false;
 
-        // Reading from a File (Read operation)-String path = "path/to/your/file.txt";
-        // try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
-        //     String line;
-        //     while ((line = reader.readLine()) != null) {
-        //         // Process each line
-        //     }
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
-        // Writing to a File (Create/Update operation)-String path = "path/to/your/file.txt";
-        // try (BufferedWriter writer = new BufferedWriter(new FileWriter(path, true))) { // true for append mode
-        //     writer.write("Some text to write to the file");
-        //     writer.newLine(); // adds a new line
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
+            while ((line = reader.readLine()) != null) {
+                strings.add(line);
+            }
+
+            for (String action : strings) {
+                String[] arrOfStr = action.split(", ");
+                custID = Integer.parseInt(arrOfStr[0]);
+                id = Integer.parseInt(arrOfStr[1]);
+                store = arrOfStr[2];
+                cost = Double.parseDouble(arrOfStr[3]);
+                type = Boolean.parseBoolean(arrOfStr[4]);
+                transactions x = new transactions(type, store, cost, id, custID);
+                result.add(x);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return result;
     }
 
-    public String endTracker(){
-        String result = "SAME customer and transaction info";
+    public ArrayList<customer> startTrackerCust(){
+        ArrayList<customer> result = new ArrayList<>();
+        ArrayList<String> strings = new ArrayList<>();
 
-        // will probably have to take in the arraylists
+        String path = "customers.txt";
+        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
 
-        // need to update customer info
-        // need to update transaction info
-        // need to make sure they were actually updated
-        // need to change the result string
+            String line;
+            int id = 0;
+            String name = null;
+            String email = null;
+
+            while ((line = reader.readLine()) != null) {
+                strings.add(line);
+            }
+
+            for (String action : strings) {
+                String[] arrOfStr = action.split(", ");
+                id = Integer.parseInt(arrOfStr[0]);
+                name = arrOfStr[1];
+                email = arrOfStr[2];
+                customer x = new customer(name, email, id);
+                result.add(x);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public String endTracker(ArrayList<transactions> transactions, ArrayList<customer> custs){
+        String result = "Thank you for using this tracker!!\n Have a lovely day!!";
+
+        String pathAct = "transactions.txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathAct, false))) { // true for append mode
+            for (transactions action : transactions) {
+                writer.write(action.getCustID() + ", " + action.getID() + ", " + action.getStore() + ", " + action.getCost() + ", " + action.getType());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String pathCust = "customers.txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathCust, false))) { // true for append mode
+            for (customer cust : custs) {
+                writer.write(cust.getID() + ", " + cust.getName() + ", " + cust.getEmail());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return result;
     }
@@ -93,7 +145,7 @@ public class tracker {
         return matches;
     }
 
-    public customer signUp(ArrayList<customer> custs, int size){
+    public customer signUp(ArrayList<customer> custs, int oldID){
         System.out.println("Please enter a username");
         String username = scnr.next();
 
@@ -116,7 +168,7 @@ public class tracker {
             matches = checkEmail(custs, email);
         }
 
-        customer customer = new customer(username, email, size+1, null);
+        customer customer = new customer(username, email, oldID+1);
         return customer;
     }
 
@@ -148,7 +200,7 @@ public class tracker {
     }
 
     // transaction methods
-    public transactions addTransaction(int size, customer user){
+    public transactions addTransaction(int id, customer user){
         boolean type = false;
         System.out.println("Was this transaction an expense? Did you buy something? Enter 1 for yes and 0 for no");
         int expense = scnr.nextInt();
@@ -162,17 +214,13 @@ public class tracker {
         System.out.println("How much did the transacitons cost?");
         double total = scnr.nextDouble();
 
-        System.out.println(size);
-        int id = size +1;
-
         transactions transaction = new transactions(type, store, total, id, user.getID());
         return transaction;
     }
 
-    public ArrayList<transactions> deleteTransaction(ArrayList<transactions> actions, int index){
-        index = index-1;
+    public ArrayList<transactions> deleteTransaction(ArrayList<transactions> actions, int id){
         for (transactions transaction : actions) {
-            if(transaction.getID() == index){
+            if(transaction.getID() == id){
                 actions.remove(transaction);
             }
         }
@@ -180,6 +228,16 @@ public class tracker {
         return actions;
     }
 
+    public ArrayList<transactions> custTransactions(ArrayList<transactions> actions, int custID){
+        ArrayList<transactions> result = new ArrayList<>();
+        for (transactions action : actions) {
+            if(custID == action.getCustID()){
+                result.add(action);
+            }
+        }
+        return result;
+    }
+    
     public ArrayList<String> printTransactions(ArrayList<transactions> actions){
         ArrayList<String> result = new ArrayList<>();
         String type = "MADE";
