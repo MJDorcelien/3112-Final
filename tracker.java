@@ -218,15 +218,28 @@ public class tracker {
         return transaction;
     }
 
-    public ArrayList<transactions> deleteTransaction(ArrayList<transactions> actions, int id){
-        for (transactions transaction : actions) {
-            if(transaction.getID() == id){
-                actions.remove(transaction);
+    public ArrayList<transactions> deleteUserTransaction(ArrayList<transactions> acts, int traID){
+        for (transactions transaction : acts) {
+            if(transaction.getID() == traID){
+                acts.remove(transaction);
+                break;
             }
         }
 
-        return actions;
+        return acts;
     }
+
+    public ArrayList<transactions> deleteTransaction(ArrayList<transactions> actions, int traID, int userID){
+        
+        for (transactions transactions : actions) {
+            if(transactions.getID() == traID && transactions.getCustID() == userID){
+                actions.remove(transactions);
+                break;
+            }            
+        }
+
+        return actions;
+    } 
 
     public ArrayList<transactions> custTransactions(ArrayList<transactions> actions, int custID){
         ArrayList<transactions> result = new ArrayList<>();

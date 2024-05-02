@@ -69,11 +69,10 @@ public class driver {
                         System.out.println(noUser);
                         break;
                     }
-                    int newID = 0;
+                    int newID = 1;
                     if(acts.size()!= 0){
                         newID = acts.get(acts.size()-1).getID()+1;
                     }
-                    // int newID = actions.get(actions.size()-1).getID()+1;
                     transactions transaction = tracker.addTransaction(newID, user);
                     acts.add(transaction);
                     actions.add(transaction);
@@ -84,23 +83,23 @@ public class driver {
                         System.out.println(noUser);
                         break;
                     }
-                    System.out.println("Below are is a list of all your transactions");
+                    if(acts.isEmpty()){
+                        System.out.println(user.getName() + " does not have any transactions, so they cannot delete any transactions.\n");
+                        break;
+                    }
+                    System.out.println("Below are is a list of all your transactions\n");
                     ArrayList<String> y = tracker.printTransactions(acts);
                     for (String action : y) {
                         System.out.println(action);
                     }
-                    System.out.println("Please enter the # of the transaction you would like to delete");
+                    System.out.println("\nPlease enter the # of the transaction you would like to delete");
                     int index = scnr.nextInt();
                     
                     System.out.println("Are you sure you would like to delete transaction #" + index + "? Enter 1 for yes and 0 for no.");
                     int checker = scnr.nextInt();
                     if (checker == 1){
-                        acts = tracker.deleteTransaction(acts, index);
-                        for (transactions tra : actions) {
-                            if(tra.getID() == index && user.getID() == tra.getCustID()){
-                                actions = tracker.deleteTransaction(actions, index);
-                            }
-                        }
+                        acts = tracker.deleteUserTransaction(acts, index);
+                        actions = tracker.deleteTransaction(actions, index, user.getID());
                     }
                     System.out.println("\n");
                     break;
@@ -109,7 +108,7 @@ public class driver {
                         System.out.println(noUser);
                         break;
                     }
-                    ArrayList<String> z = tracker.printCustTransactions(actions, user);
+                    ArrayList<String> z = tracker.printTransactions(acts);
                     for (String action : z) {
                         System.out.println(action);
                     }
